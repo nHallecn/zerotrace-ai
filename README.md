@@ -1,141 +1,142 @@
 # ZeroTrace AI
 
-**Autonomous Vulnerability Discovery and Verification Engine**
+**AI-Powered Vulnerability Discovery and Verification Platform**
 
-> Research-stage, authorization-first tooling for finding, reproducing, and explaining security defects in software repositories.
+> A software security product designed to help developers and authorized security teams discover, reproduce, understand, and resolve vulnerabilities in their applications.
 
-## Overview
+## Product overview
 
-ZeroTrace AI is an open-source-oriented final-year software engineering research project. It combines static program analysis, AI-assisted vulnerability hypothesis generation, and isolated, feedback-driven testing to uncover and validate security defects. Instead of simply flagging suspicious code, it aims to provide reproducible evidence and precise source-level explanations.
+ZeroTrace AI is a final-year **Software Engineering product-development project**. We are building a practical developer tool, not conducting a research-only study.
 
-**Current status:** Planning / initial development. Features below are proposed, not yet implemented.
+Developers will be able to connect authorized JavaScript/TypeScript codebases, inspect security-relevant code paths, discover potential defects with static analysis and AI, verify selected findings through controlled tests, and receive actionable evidence-based reports.
 
-## Research question
+**Status:** Architecture and detailed design in progress. The capabilities described below are planned; the application has not yet been implemented.
 
-Can a memory-augmented AI security testing system that combines static analysis and execution feedback discover and verify more genuine vulnerabilities per unit of testing budget than static analysis or single-pass LLM analysis alone?
+## Problem we solve
 
-## Intended capabilities
+Existing tools may identify suspicious code without demonstrating whether the issue is exploitable under intended conditions. Teams spend time reviewing false positives and reproducing defects manually. ZeroTrace aims to combine code understanding, AI investigation, constrained testing, and evidence-based reports in a single workflow.
 
-- **Repository ingestion:** Import explicitly authorized GitHub or local JavaScript/TypeScript projects at a pinned commit.
-- **Code intelligence:** Index symbols, call relationships, data flows, dependencies, and trust boundaries.
-- **Hybrid vulnerability discovery:** Combine conventional analyzers with structured AI-generated hypotheses.
-- **Controlled test generation:** Generate targeted tests for authentication, authorization, injection, race conditions, and business-logic defects.
-- **Verification:** Execute generated tests in disposable, resource-constrained sandboxes and capture traces and minimal reproduction cases.
-- **Research memory:** Record investigated hypotheses, supporting evidence, test outcomes, and reasons for rejection.
-- **Reporting:** Export human-reviewable findings, including affected files, severity rationale, reproduction instructions, and remediation suggestions.
-- **Evaluation:** Compare against baseline static-analysis and prompt-only approaches, measuring precision, recall on labeled benchmarks, runtime, and model cost.
+## Intended users
 
-## Proposed architecture
+- Software developers and teams maintaining JavaScript/TypeScript applications
+- Application security engineers auditing software they own or are authorized to test
+- Open-source maintainers investigating security defects
+- Bug bounty researchers operating strictly within program-approved scopes (future phase)
+
+## Core product capabilities
+
+1. **Repository intelligence:** Import authorized local or GitHub repositories, create immutable source snapshots, and index code using AST analysis.
+2. **AI vulnerability discovery:** Generate independent, evidence-grounded security leads and prioritize likely defects, even when a conventional scanner has not flagged them.
+3. **Controlled verification:** Create typed test plans, execute permitted tests in isolated environments, and distinguish suspected, reproduced, verified, inconclusive, and refuted findings.
+4. **Developer reports:** Display locations, relevant CWE classes, impact assessment, reproduction evidence, and recommended remediation.
+5. **Product quality measurement:** Track detection accuracy, false positives, runtime, reproducibility, and model cost using repeatable test suites.
+6. **Authorized bounty workflows:** Support explicitly permitted targets and human-reviewed disclosures as a later capability.
+
+## Planned product workflow
 
 ```text
-                  +--------------------------+
-                  | Web dashboard / CLI      |
-                  +------------+-------------+
-                               |
-                  +------------v-------------+
-                  | API + Scope Policy Gate  |
-                  +------------+-------------+
-                               |
-             +-----------------v-------------------+
-             | Job Orchestrator + Research Memory  |
-             +--------+---------------+------------+
-                      |               |
-              +-------v-------+ +-----v----------------+
-              | Static        | | AI Hypothesis Engine  |
-              | Analysis      | +-----+----------------+
-              +-------+-------+       |
-                      +-------+-------+
-                              |
-                    +---------v----------+
-                    | Test Generator      |
-                    +---------+----------+
-                              |
-                    +---------v----------+
-                    | Isolated Sandbox    |
-                    | + Runtime Feedback  |
-                    +---------+----------+
-                              |
-                    +---------v----------+
-                    | Evidence Validator  |
-                    | + Report Generator  |
-                    +--------------------+
+Authorized project / local fixture
+        |
+Repository snapshot & source index
+        |
+Static analysis + AI research leads
+        |
+Prioritized vulnerability hypotheses
+        |
+Policy-validated typed test plan
+        |
+Isolated verification & security oracle
+        |
+Evidence-backed finding and developer report
 ```
 
-## Proposed tech stack
+## Product development roadmap
 
-| Area | Planned tooling |
+| Phase | Product increment |
 | --- | --- |
-| Dashboard | Next.js, React, TypeScript |
-| API and orchestration | Node.js, Fastify, TypeScript |
-| AI | Provider-agnostic model adapter with structured outputs |
-| Static analysis | TypeScript Compiler API, tree-sitter, Semgrep and/or CodeQL |
-| Test generation | Vitest, fast-check |
-| Isolation | Docker sandbox workers with restricted network and resources |
-| Queue | BullMQ and Redis |
-| Persistence | PostgreSQL |
-| Observability | OpenTelemetry |
-| Git integration | GitHub API |
+| **Foundation A** | Working CLI, local fixture snapshotting, safe AST indexer, artifacts, and tests |
+| **Foundation B** | API, persistence, authorization, orchestration, and secure execution infrastructure |
+| **Phase 1 — Repository Intelligence** | Reliable source understanding and normalized security leads |
+| **Phase 2 — AI Security Researcher** | AI-assisted discovery, triage, prioritization and investigation memory |
+| **Phase 3 — Autonomous Verification** | Typed test generation, controlled sandbox runs, and evidence-backed verdicts |
+| **Phase 4 — Quality & Performance Evaluation** | Repeatable benchmarks, regression testing, accuracy and cost reports |
+| **Phase 5 — Controlled Bounty Research** | Authorized program integration and human-reviewed disclosure workflows |
 
-## Proposed monorepo layout
+The final-year deliverable will be a functional, tested MVP. The complete architecture remains the longer-term product vision; later integrations are not graduation requirements.
+
+## Proposed technology stack
+
+| Component | Planned technologies |
+| --- | --- |
+| Web dashboard | Next.js, React, TypeScript |
+| API | Node.js, Fastify, Zod |
+| Code intelligence | TypeScript Compiler API, tree-sitter |
+| Static analysis | Semgrep and/or CodeQL adapters |
+| AI reasoning | Provider-agnostic model adapter, structured tool calls |
+| Verification | Typed test plans, Vitest, fast-check, isolated workers |
+| Database | PostgreSQL |
+| Job orchestration | Redis, BullMQ (when service phase requires it) |
+| Artifacts | Content-addressed, access-controlled object storage |
+| Observability | OpenTelemetry |
+| Infrastructure | Restricted Docker for controlled local fixtures; stronger isolation for untrusted targets |
+
+## Proposed repository organization
 
 ```text
 zerotrace-ai/
 ├── apps/
-│   ├── web/               # Research dashboard
-│   └── api/               # API and job management
+│   ├── cli/
+│   ├── api/
+│   └── web/
 ├── packages/
-│   ├── shared/            # Schemas and types
-│   ├── repository-index/  # Parsing and repository graph
-│   ├── analyzers/         # Static analysis integrations
-│   ├── ai-researcher/     # Hypothesis generation and memory
-│   ├── test-generator/    # Security test generation
-│   ├── sandbox/           # Isolated execution interface
-│   └── reporting/         # Findings and evidence output
-├── workers/               # Background analysis workers
-├── benchmarks/            # Authorized, reproducible test fixtures
-├── docs/                  # Architecture, methodology, threat model
+│   ├── shared/
+│   ├── policy/
+│   ├── repository-intelligence/
+│   ├── ai-researcher/
+│   ├── verification-engine/
+│   ├── evaluation/
+│   ├── provenance/
+│   └── reporting/
+├── workers/
+├── benchmarks/
+├── docs/
+│   ├── 00-system-design/
+│   └── 01-repository-intelligence/
 └── README.md
 ```
 
-## Initial milestones
+## Engineering standards
 
-1. **Foundation:** TypeScript workspace, configuration, CI, database schemas, and API.
-2. **Repository indexing:** AST-aware ingestion of local/authorized JavaScript and TypeScript code.
-3. **Detection baseline:** Conventional static-analysis integration and normalized findings.
-4. **AI investigation:** Evidence-based vulnerability hypotheses with strict JSON schemas.
-5. **Sandbox verification:** Deterministic test execution and reproducible local proofs of concept.
-6. **Evaluation:** Seeded-vulnerability fixtures, baseline comparisons, and research report.
+The product will be developed incrementally with typed interfaces, automated tests, code review, continuous integration, immutable inputs, reproducible results, observability, explicit acceptance criteria, and security-oriented engineering practices.
+
+Benchmarking is used to **validate product quality**; it does not redefine ZeroTrace as a research-only project.
 
 ## Safety and authorization
 
-ZeroTrace AI is designed for **owned software, deliberately vulnerable training projects, and explicitly authorized research scopes**.
+ZeroTrace is intended only for software owned by the user, deliberately vulnerable fixtures, or targets for which explicit testing permission has been independently established.
 
-- Public source availability **does not** imply permission to test a live service.
-- The user must define allowed repositories, commit hashes, test endpoints, and boundaries before a run.
-- Sandbox tests should default to **no external network access**, no privileged containers, and limited CPU, memory, time, and filesystem access.
-- Never use production credentials or personal data in test environments.
-- Do not conduct stealth scanning, denial-of-service tests, persistence, destructive exploitation, or unauthorized access.
-- Findings intended for bug bounty programs require **human review** and compliance with the program's current scope and disclosure rules.
-- No automatic report submission or live-target exploitation is part of the initial scope.
+- Public source availability is not permission to test deployed systems.
+- External code/model transmission requires explicit approval and protection of confidential source data.
+- Initial executable testing is restricted to approved, disposable local fixtures with no network access by default.
+- Results are evidence-graded; suspicious code is not automatically called a confirmed vulnerability.
+- No unauthorized scanning, destructive testing, service disruption, or automated bounty submission.
+- Human review is required before external vulnerability disclosure.
 
-## Evaluation methodology
+## Documentation
 
-Start with labeled, intentionally vulnerable JavaScript/TypeScript applications and seeded test cases. Compare:
+- [System Design v1.1](docs/00-system-design/SYSTEM_DESIGN_V1_1.md)
+- [Phase 1 Detailed Design](docs/01-repository-intelligence/PHASE1_DESIGN_V1.md)
 
-1. Conventional static-analysis baseline.
-2. Single-pass LLM analysis baseline.
-3. ZeroTrace hybrid analysis plus verification.
-
-Metrics: verified true positives, false-positive rate, vulnerability recall on labeled fixtures, source-location accuracy, reproducibility, execution time, and AI inference cost.
+These documents specify the planned product architecture and development backlog. They are not claims of implemented features.
 
 ## Contributing
 
-The repository is in its research foundation stage. Contributions should include tests, clear reproduction cases, and documentation. Please do not submit vulnerability reports against systems without explicit authorization.
+The product is in its design phase. Contributions should include tests, clear acceptance criteria, documentation, and safe, authorized reproduction cases.
 
 ## License
 
-To be selected before public release.
+To be decided before public distribution.
 
 ## Disclaimer
 
-ZeroTrace AI is a research and engineering project. It does not guarantee detection of vulnerabilities, acceptance of bug bounty reports, or financial rewards.
+ZeroTrace AI does not guarantee complete vulnerability detection, bug bounty acceptance, or rewards. Testing must stay within authorized scope.
