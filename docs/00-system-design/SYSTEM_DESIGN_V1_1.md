@@ -1,12 +1,18 @@
-# ZeroTrace AI — System Design v1.1
+# ZeroTrace AI — Product System Design v1.1
 
-**Status:** Proposed architecture, review pending. **Date:** 2026-10-25. **Supersedes:** v1.0 after approval, not before. No implementation is claimed.
+**Status:** Proposed software product architecture, review pending. **Date:** 2026-10-25. **Supersedes:** v1.0 after approval, not before. No implementation is claimed.
+
+## Product vision and roadmap
+
+**Product objective:** Deliver a working AI-powered security tool that helps developers inspect authorized repositories, investigate potential vulnerabilities and obtain reproducible, actionable findings. This is a Software Engineering product-development project. Evaluation and benchmarks are product quality assurance, not a separate academic research deliverable.
+
+**Acceptance outcomes:** A usable CLI first, then an authenticated API and developer dashboard; reproducible detection and verification on authorized local fixtures; regression tests and documented false-positive behavior; controlled evolution toward authorized bounty workflows.
 
 ## Goal and roadmap
 
 Build an authorization-first AI vulnerability research engine for JavaScript and TypeScript repositories. Preserve all five phases: (1) repository intelligence, (2) AI security researcher, (3) autonomous verification, (4) benchmarking and research evaluation, (5) controlled bounty research.
 
-**Thesis MVP:** local authorized fixtures; one TypeScript indexing implementation; one conventional scanner; one model adapter; typed constrained offline verification for 2–3 vulnerability classes; reproducible evaluation. **Long-term:** GitHub ingestion, broader languages/frameworks, advanced sandbox isolation, expanded memory/agents, real authorized bounty workflows. Never treat a publicly readable repository as authorization to attack its deployed service.
+**Final-year product MVP:** local authorized fixtures; one TypeScript indexing implementation; one conventional scanner; one model adapter; typed constrained offline verification for 2–3 vulnerability classes; reproducible evaluation. **Long-term:** GitHub ingestion, broader languages/frameworks, advanced sandbox isolation, expanded memory/agents, real authorized bounty workflows. Never treat a publicly readable repository as authorization to attack its deployed service.
 
 ## Architecture
 
@@ -55,7 +61,7 @@ Artifacts have content digest, owning project, classification, encryption/access
 
 Versioned `/v1` API (Foundation B): projects, authorization grants (including revoke), snapshots, sessions (including cancel), leads/hypotheses, verification plans/runs, findings, researcher labels, benchmark datasets/experiments, artifact retrieval/deletion. Validate Zod contracts, auth, body size/rate limits and project scope. Scoped `idempotency_keys` by requester + endpoint + request hash; never scope session creation keys to nonexistent session IDs. Safe external error envelope separate from protected diagnostic logs. CLI/Foundation A works before APIs.
 
-## Benchmark evaluation
+## Product quality evaluation and benchmarking
 
 Methods: B0 scanner alone; B1 LLM alone; B2 LLM triage of scanner output; B3 repository-aware AI hypotheses without feedback; B4 full hybrid AI + verification; ablation B4 without persistent memory. All methods submit findings to the **same blinded or deterministic adjudication process**, not just B4. Report precision for all emitted reports, verified yield separately, recall, false positives, CWE/location matching, elapsed compute, and model-token costs.
 
@@ -65,15 +71,15 @@ Pre-register dataset, project-level held-out split, secure hard negatives, sampl
 
 ADR-001 TypeScript-first; ADR-002 modular monolith + separate isolated worker; ADR-003 PostgreSQL system of record; ADR-004 Redis/BullMQ later with reconciliation rather than unqualified durability; ADR-005 evidence-gated AI hypotheses; ADR-006 immutable snapshots and run manifests; ADR-007 default-deny scope and external inference permissions; ADR-008 restricted local fixture Docker tier, stronger isolation gate later; ADR-009 human-reviewed disclosures; ADR-010 independent comparative evaluation; ADR-011 typed DSL verification; ADR-012 single-user local thesis MVP with future multi-user architecture.
 
-## Foundation milestones and Codex backlog
+## Product delivery milestones and Codex backlog
 
 **Foundation A:** ZT-A01 pnpm strict TS workspace/tests; ZT-A02 shared Zod models and `TestPlanV1`; ZT-A03 canonical immutable snapshotter; ZT-A04 snapshot-only TypeScript indexer and source spans; ZT-A05 source research leads/CLI JSON output; ZT-A06 run manifest + local content-addressed artifacts; ZT-A07 unit/security tests and CI.
 
 **Foundation B:** ZT-B01 Fastify versioned API; ZT-B02 PostgreSQL schema/migrations including research leads and evidence FKs; ZT-B03 explicit authorization/LLM data grants; ZT-B04 sessions/leases/idempotency/cancellation; ZT-B05 queue consistency/recovery; ZT-B06 artifact API/protection/retention; ZT-B07 isolated worker and resource/network tests; ZT-B08 telemetry and API security tests.
 
-**Exit gate:** Local authorized JS/TS fixture is snapshot-pinned, safely indexed, produces deterministic research leads and provenance; malformed/path-escaping fixtures are rejected; CI runs. No unsupervised external execution. Foundation B requires verified policy denial and integration tests. Later phases must meet their own exit criteria.
+**Release acceptance gate:** Local authorized JS/TS fixture is snapshot-pinned, safely indexed, produces deterministic research leads and provenance; malformed/path-escaping fixtures are rejected; CI runs. No unsupervised external execution. Foundation B requires verified policy denial and integration tests. Later phases must meet their own exit criteria.
 
-## Stage 0 open gates
+## Stage 0 product design approval gates
 
 Confirm selected MVP vulnerability classes, fixture dataset, external model provider/data policy, trusted sandbox host OS, benchmark sample and acceptable research budget **before** implementing their dependent features. Keep design-review status distinct from production security approval.
 
