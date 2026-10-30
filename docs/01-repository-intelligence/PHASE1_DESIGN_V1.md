@@ -1,6 +1,12 @@
-# ZeroTrace AI — Phase 1 Repository Intelligence Design v1.0
+# ZeroTrace AI — Phase 1 Repository Intelligence Product Design v1.0
 
-**Status:** Draft detailed design (not implementation). **Related:** [System Design v1.1](../00-system-design/SYSTEM_DESIGN_V1_1.md). **Purpose:** deliver reproducible, scope-checked TypeScript/JavaScript source understanding that supports both scanner-origin and independent AI-origin research leads.
+**Status:** Draft detailed design (not implementation). **Related:** [System Design v1.1](../00-system-design/SYSTEM_DESIGN_V1_1.md). **Purpose:** deliver a functioning developer-facing repository intelligence component with reproducible, scope-checked TypeScript/JavaScript source understanding that supports both scanner-origin and independent AI-origin research leads.
+
+## Phase 1 product goals and boundaries
+
+**User story:** As a developer, I can select an authorized local JS/TS project, run a single command, and receive a structured file/symbol index and evidence-backed security leads with source locations.
+
+**Demo criterion:** The CLI can inspect an approved fixture and display a usable JSON report; it gives clear failures for invalid scope or unsafe paths. The report explicitly distinguishes potential issues from verified vulnerabilities.
 
 ## Phase 1 goals and boundaries
 
@@ -53,7 +59,7 @@ All boundaries have versioned Zod schemas; return typed errors without embedding
 
 Malformed UTF-8, deeply nested syntax, huge files, path collision, TOCTOU symlink swap, tsconfig extends escaping root, unsupported imports and timeouts must not cause unauthorized reads or host execution. Record rejects with machine-readable error code and safe diagnostic. Analyze trusted fixtures within limited worker process; move to stronger isolation before accepting arbitrary hosted repos.
 
-## Acceptance criteria
+## Product acceptance criteria
 
 1. Identical fixtures and settings yield identical snapshot/manifest/index digests.
 2. Editing one file changes snapshot digest; existing snapshots remain unchanged.
@@ -78,6 +84,6 @@ Malformed UTF-8, deeply nested syntax, huge files, path collision, TOCTOU symlin
 
 **Codex kickoff for ZT-A01:** scaffold a strict, tested pnpm TypeScript workspace containing `apps/cli`, `packages/shared`, `packages/repository-intelligence`, `packages/policy`, and `packages/provenance`. Include ESM boundaries, lint, test, CI, and documented commands. Do not execute untrusted repository code or implement live network scanning. Submit a focused PR with passing test evidence.
 
-## Design review gate
+## Product design review gate
 
 Confirm fixture set, implementation machine/OS, max source corpus, span conventions and reporting format; record deviations as ADRs. Approval of design is separate from certification for hostile inputs or deployment.
