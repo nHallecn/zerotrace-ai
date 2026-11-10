@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
 import { trustedCases } from './proof-fixtures.mjs';
 
 export function runProofLoop(cases = trustedCases) {
@@ -28,7 +29,7 @@ export function runProofLoop(cases = trustedCases) {
   const report = {
     schemaVersion: '1', engine: 'trusted-fixture-oracle-baseline', aiUsed: false,
     authorization: 'bundled-trusted-fixtures-only',
-    inputDigest: createHash('sha256').update(trustedCases.map(x => x.id).join('|')).digest('hex'),
+    inputDigest: createHash('sha256').update(cases.map(x => x.id).join('|')).digest('hex'),
     cases: findings,
     metrics: {
       caseCount: findings.length, truePositives, falsePositives, falseNegatives, trueNegatives: negatives,
@@ -59,6 +60,6 @@ async function main() {
   if (!result.passed) process.exitCode = 1;
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
   await main();
 }
