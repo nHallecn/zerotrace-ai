@@ -1,0 +1,14 @@
+name: Action-first proof harness
+on:
+  push:
+  pull_request:
+jobs:
+  proof:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tools/proof-loop.test.mjs
+      - run: node tools/proof-loop.mjs
