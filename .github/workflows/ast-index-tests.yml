@@ -1,0 +1,20 @@
+name: AST snapshot index tests
+on:
+  push:
+  pull_request:
+jobs:
+  ast-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: pnpm install --no-frozen-lockfile
+      - run: node --test tools/snapshot-index.test.mjs
+      - run: node tools/snapshot-cli.mjs benchmarks/fixtures/snapshot-demo .local-snapshots
+      - run: node tools/index-cli.mjs ".local-snapshots/manifests/$(ls .local-snapshots/manifests | head -n 1)" .local-snapshots
