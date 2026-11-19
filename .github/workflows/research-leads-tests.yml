@@ -1,0 +1,19 @@
+name: Research leads tests
+on:
+  push:
+  pull_request:
+jobs:
+  leads:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pnpm install --no-frozen-lockfile
+      - run: node --test tools/snapshot-index.test.mjs tools/research-leads.test.mjs
+      - run: node tools/snapshot-cli.mjs benchmarks/fixtures/leads-demo .local-snapshots
+      - run: node tools/leads-cli.mjs ".local-snapshots/manifests/$(ls .local-snapshots/manifests | head -n 1)" .local-snapshots
